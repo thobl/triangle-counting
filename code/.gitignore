@@ -1,0 +1,5 @@
+debug
+release
+.cache
+.projectile
+compile_commands.json
