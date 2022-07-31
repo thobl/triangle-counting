@@ -1,11 +1,11 @@
 # Counting Triangles #
 
 Comparing some algorithms for counting triangles of a graph.  The
-purpose of this is mostly to illustrate how some theoretical
-considerations concerning the asymptotic running time impact actual
-performance.  All experiments are done on sparse graphs (average
-degree *10*) with heterogeneous degree distribution (power law with
-exponent *2.2*).
+purpose of this is mostly to illustrate for my algorithms lecture, how
+some theoretical considerations concerning the asymptotic running time
+impact actual performance.  All experiments are done on sparse graphs
+(average degree *10*) with heterogeneous degree distribution (power
+law with exponent *2.2*).
 
 ## Algorithms ##
 
