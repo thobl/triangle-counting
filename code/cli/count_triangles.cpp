@@ -14,10 +14,12 @@ int main(int argc, char** argv) {
 
   std::string algo = "clever";
   app.arg(algo, "--algo", "The algorithm that should be used.",
-          {"clever", "clever_skip", "clever_sort_skip", "brute_force"});
+          {"clever", "clever_skip", "clever_sort_skip", "brute_force_matrix",
+           "brute_force_matrix_skip", "brute_force_hash_skip",
+           "brute_force_clever_skip"});
 
   app.arg_seed();
-  
+
   app.arg_header("graph,triangles,algo,time");
 
   app.parse(argc, argv);
@@ -39,9 +41,15 @@ int main(int argc, char** argv) {
     res = triangles_clever_skip(G);
   } else if (algo == "clever_sort_skip") {
     res = triangles_clever_sort_skip(G);
-  } else if (algo == "brute_force") {
-    res = triangles_brute_force(G);
-  }
+  } else if (algo == "brute_force_matrix") {
+    res = triangles_brute_force_matrix(G);
+  } else if (algo == "brute_force_matrix_skip") {
+    res = triangles_brute_force_matrix_skip(G);
+  } else if (algo == "brute_force_hash_skip") {
+    res = triangles_brute_force_hash_skip(G);
+  } else if (algo == "brute_force_clever_skip") {
+    res = triangles_brute_force_clever_skip(G);
+  } 
   Timer::stop_timer("triangles");
 
   std::cout << input_file.filename() << "," << res << "," << algo << ","

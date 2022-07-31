@@ -13,7 +13,8 @@ Graph::Graph(const std::filesystem::path& input_file) {
     // increase adj list array if necessary
     unsigned max_id = std::max(u, v);
     if (max_id >= m_adj_list.size()) {
-      m_adj_list.resize(max_id + 1);
+      m_n = max_id + 1;
+      m_adj_list.resize(n());
     }
 
     // actually create the edge
@@ -24,10 +25,6 @@ Graph::Graph(const std::filesystem::path& input_file) {
   // create the node set
   m_nodes = std::vector<node>(m_adj_list.size());
   std::iota(m_nodes.begin(), m_nodes.end(), 0);
-}
-
-unsigned Graph::n() const {
-  return m_nodes.size();
 }
 
 const std::vector<node>& Graph::nodes() const {
@@ -50,4 +47,24 @@ void Graph::permute_nodes(std::vector<node> old_to_new_id) {
     }
   }
   m_adj_list = new_adj_list;
+}
+
+std::vector<std::vector<bool>> Graph::adj_matrix() const {
+  std::vector<std::vector<bool>> mtx(n(), std::vector<bool>(n(), false));
+  for (node u : nodes()) {
+    for (node v : neighbors(u)) {
+      mtx[u][v] = true;
+    }
+  }
+  return mtx;
+}
+
+std::vector<std::unordered_set<node>> Graph::adj_set() const {
+  std::vector<std::unordered_set<node>> map(n());
+  for (node u : nodes()) {
+    for (node v : neighbors(u)) {
+      map[u].insert(v);
+    }
+  }
+  return map;
 }

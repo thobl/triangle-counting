@@ -34,7 +34,6 @@ run.add(
             102400,
             204800,
             409600,
-            # 819200,
         ],
         "deg": 10,
         "dim": 2,
@@ -58,32 +57,57 @@ run.run()
 run.section("[2/2] Count the triangles")
 
 graphs = [os.path.basename(f) for f in glob.glob("data/graphs/*")]
-graphs_small = [graph for graph in graphs if int(re.split("=|_", graph)[2]) < 4000]
+
+
+def size_filter(args):
+    """Filter too large graphs for some algos."""
+    n = int(re.split("=|_", args["graph"])[2])
+    if args["algo"] in ["brute_force_matrix"] and n > 12800:
+        return False
+    if args["algo"] in ["brute_force_hash_skip"] and n > 51200:
+        return False
+    if (
+        args["algo"]
+        in [
+            "brute_force_matrix_skip",
+            "brute_force_hash_skip",
+            "brute_force_clever_skip",
+        ]
+        and n > 102400
+    ):
+        return False
+    return True
+
+
+def mem_parser(stdout, res):
+    """Parse the memory measurement and append it to  stdout."""
+    return stdout + "," + res.stderr.strip()
+
 
 ######################################################################
 # generate random graphs
 run.group("count")
 
 run.add(
-    "clever",
-    "code/release/count_triangles --algo [[algo]] --no-header data/graphs/[[graph]]",
+    "[[algo]]",
+    "/usr/bin/time -f '%M' code/release/count_triangles --algo [[algo]] --no-header data/graphs/[[graph]]",
     {
-        "algo": ["clever", "clever_skip", "clever_sort_skip"],
+        "algo": [
+            "clever",
+            "clever_skip",
+            "clever_sort_skip",
+            "brute_force_matrix",
+            "brute_force_matrix_skip",
+            "brute_force_hash_skip",
+            "brute_force_clever_skip",
+        ],
         "graph": graphs,
     },
-    stdout_file="data/results_clever.csv",
+    combinations_filter=size_filter,
+    stdout_file="data/results_[[algo]].csv",
+    stdout_mod=mem_parser,
     header_command="code/release/count_triangles --only-header",
-)
-
-run.add(
-    "brute_force",
-    "code/release/count_triangles --algo [[algo]] --no-header data/graphs/[[graph]]",
-    {
-        "algo": ["brute_force"],
-        "graph": graphs_small,
-    },
-    stdout_file="data/results_brute_force.csv",
-    header_command="code/release/count_triangles --only-header",
+    header_mod=lambda head: f"{head},memory",
 )
 
 
