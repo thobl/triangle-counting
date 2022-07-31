@@ -5,7 +5,7 @@ import run
 import multiprocessing
 import re
 
-run.use_cores(multiprocessing.cpu_count() - 4)
+run.use_cores(multiprocessing.cpu_count() - 2)
 
 ######################################################################
 ######################################################################
