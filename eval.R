@@ -4,6 +4,7 @@ library(forcats)
 
 theme_set(theme_bw())
 colors <- c("#df9b1b", "#009682", "#4664aa", "#a22223", "#a3107c", "#23a1e0", "#8cb63c")
+shapes <- c(21, 22, 23, 24, 15, 17, 19)
 
 algos <- c(
     "brute_force_matrix",
@@ -40,10 +41,11 @@ unit_y <- function(unit) {
 memory_plot <- function(tbl) {
     p <- ggplot(tbl, aes(x = n, y = memory * 1e3, color = algo, shape = algo)) +
         stat_summary(geom = "line", fun.data = mean_se) +
-        stat_summary(fun.data = mean_se) +
+        stat_summary(geom = "point", fun.data = mean_se, fill = "white") +
         scale_colour_manual(values = colors) +
         unit_x("") +
         unit_y("B") +
+        scale_shape_manual(values = shapes) +
         ylab("memory")
     print(p)
 }
@@ -51,16 +53,17 @@ memory_plot <- function(tbl) {
 time_plot <- function(tbl, max_y = NA) {
     p <- ggplot(tbl, aes(x = n, y = time / 1000, color = algo, shape = algo)) +
         stat_summary(geom = "line", fun.data = mean_se) +
-        stat_summary(fun.data = mean_se) +
+        stat_summary(geom = "point", fun.data = mean_se, fill = "white") +
         scale_colour_manual(values = colors) +
         unit_x("") +
         unit_y("s") +
         coord_cartesian(ylim = c(NA, max_y)) +
+        scale_shape_manual(values = shapes) +
         ylab("time")
     print(p)
 }
 
-pdf("plots.pdf", width = 8, height = 5, onefile = TRUE)
+pdf("plots.pdf", width = 6, height = 3.75, onefile = TRUE)
 time_plot(tbl %>%
     filter(algo %in% (algos %>% head(2))))
 memory_plot(tbl %>%
@@ -84,4 +87,5 @@ time_plot(tbl %>%
 time_plot(tbl %>%
     filter(algo %in% (algos %>% head(6))), max_y = 13)
 time_plot(tbl, max_y = 13)
+time_plot(tbl, max_y = 1.5)
 dev.off()

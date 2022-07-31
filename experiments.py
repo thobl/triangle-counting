@@ -64,8 +64,6 @@ def size_filter(args):
     n = int(re.split("=|_", args["graph"])[2])
     if args["algo"] in ["brute_force_matrix"] and n > 12800:
         return False
-    if args["algo"] in ["brute_force_hash_skip"] and n > 51200:
-        return False
     if (
         args["algo"]
         in [
